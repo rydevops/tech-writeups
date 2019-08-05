@@ -1,9 +1,8 @@
+# WORK IN PROGRESS
 # Working with iptables for docker
 
 **Target OS:** CentOS 7<br>
 **Docker Version:** 1.13.1 (default provided on CentOS repositories)
-
-While playing with Docker on CentOS I discovered that restricting access to a container with an exposed port was not cut and dry. Initially, I 
 
 **Required Packages:**
 *  iptables
