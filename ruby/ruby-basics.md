@@ -22,6 +22,7 @@
    ```
 *  **Naming conventions**:
    *  **Variables** should use **snake case** labelling (e.g. `my_name = 17`)
+   *  **Class Names** use camel casing (e.g. MyCar)
 *  **Comments**:
    *  `#` - Single line comment (can be used after a executing statement)
       ```ruby
@@ -104,6 +105,19 @@
 
       greet("Peter") {|name| puts "Hello #{name}"} # Notice how the name is the parameter being passed to the block
       ```
+   *  A **block** can be given optionally within a function by checking if a block as provided using `block_given?`
+      ```ruby
+      def greet(name)
+        if block_given?
+          yield(name)
+        else
+          puts "Hello #{name}"
+        end    
+      end
+
+      greet("Jim") # Without block
+      greet("Jim") { |name| "Bonjour #{name}" } # With block
+      ```
 *  **Proc** - Provides a way to name a block and store it for later use (similar to a function definition)
    *  Syntax
       ```ruby
@@ -136,14 +150,18 @@
          phrase.call("Bob")
          ```
       * **procs** do not check the number of parameters passed to it 
-      * **procs** that are defined in a called method will return from the method immediately not giving the called method any chance to complete
-        its remaining actions
+      * **procs** that have a return keyword define in them will immediately terminate the calling function
+        that yields the proc.        
         ```ruby
-        def talk
-            commentator = Proc.new { re}
-            puts "In talk..."
+        def talker
+            speaker = Proc.new { return "I am a speaker" }
+            speaker.call # Do to above return we never get past this line
+            returns "I am a talker"
+        end
 
+        puts talker # prints "I am a speaker"
         ```
+      
 *  **Lambdas** - Are similar to **proc**
    *  Syntax:
       ```ruby
@@ -154,6 +172,73 @@
          double = lambda { |number| number * 2 }
          ```
       * **lambdas** check the number of parameters passed to it. `nil` is assigned to missing variables and extra vars are ignored
+      * Unlike **procs** **labmdas** return control back to the yielding function even when they have a return statement within them
+      * **lambdas** can be passed by converting `&` the **lambda** to a **block*
+        ```ruby
+        numbers = [1, 9, 2, 8, 3, 7, 4, 6, 5]
+
+        sorter = lambda {|number_a, number_b| number_a <=> number_b}
+        reverser = lambda {|number_a, number_b| number_b <=> number_a}
+
+        sorted = numbers.sort(&reverser)
+
+        puts sorted
+        ```
+*  **Classes** - Define a group of related attributes and methods to represent a real-time object (often)
+   *  Syntax:
+      ```ruby
+      class Car
+        $creator = "Jim Brown"  # Global variable acccessible by all
+        @@count = 0  # Class-level variable
+ 
+        # initialization method called automatically when instance created
+        def initialize(make, model, year)
+          # Create instance attributes
+          @make = make
+          @model = model
+          @year = year
+          @powered_on = false
+          @count += 1
+        end
+         
+        def toggle_power
+            @powered_on = !@powered_on
+            
+            state = @powered_on ? "on" : "off"
+            puts "Engine has been powered #{state}"
+        end
+
+        def self.count
+            puts @@count
+        end
+
+        def display_details
+            puts "Make: #{@make}"
+            puts "Model: #{@model}"
+            puts "Year: #{@year}"
+        end    
+      end   
+ 
+      car = Car.new("Toyota", "RAV4", 2019)
+      car.toggle_power
+      car.display_details
+      puts "#{$creator}"
+      ```
+   *  Class variables:
+      *  `@var_name`  - Instance variable
+      *  `@@var_name` - Class variable
+      *  `$var_name`  - Global variable (defined within the class itself)
+   *  Inheritence:
+      *  Syntax:
+         ```ruby
+         class ParentClass
+           # parent definitions
+         end
+
+         class ChildClass < ParentClass # Inherit from the ParentClass
+           #  child definitions 
+         end
+         ```   
 *  **Data Types**:
    *  **Number**:
       ```ruby
