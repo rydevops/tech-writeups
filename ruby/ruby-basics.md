@@ -1,15 +1,16 @@
-# Learning Ruby Basics
+# Ruby Basics
 
 *  Everything is an object
 *  Ruby is case-sensitive
 *  Ruby is not whitespace sensitive meaning we can use whitespace (spaces or tabs) to help make code easier to read
-*  When calling methods with more than one argument you must us parentheses. 
-*  The `!` operator can be used to make changes to a variable and assign the result to that same variable
+*  When calling methods with more than one argument you must us parentheses.
+   *  A good rule of thumb is to use parentheses unless it's perfectly clear when reading the code 
+*  The `!` operator can be used to make changes to a variable and assign the result to that same variable in a single statement
    ```ruby
    name = 'jim'
    name.capitalize!  # Equivalent to 'name = name.capitalize'
    ```
-*  The `?` operator can be applied to a method to indicate that the method generally returns `true` or `false`
+*  The `?` operator can be applied to a method to generally indicate that the method returns `true` or `false`
    ```ruby
    my_data = "Some data to search through"
 
@@ -38,6 +39,54 @@
        statement
        =end
        ```
+*  **Custom Methods**:
+   *  Syntax:
+      ```ruby
+      # Without any function arguments
+      def method_name
+        # method contents
+      end
+
+      # With basic arguments
+      def method_name(parameter1, paramter2)
+        # contents
+      end
+
+      # with splat agruments (i.e. a variable list of arguments)
+      def greet(*friends)
+
+      end 
+      ```
+   *  Methods can be define with and without arguments
+   *  Methods can accept a variable number of items using the splat operator (*) as shown below. These parameters are an **Array**
+      ```ruby
+      # Accept a list of friends
+      def greet(*friends)
+        friends.each do |friend|
+          puts "HEllo #{friend}"
+        end  
+      end
+
+      greet('Jim', 'John', 'Tina')
+      ```
+   *  Methods can return data using the `return` keyword. Methods can also return values if the last statement in the method to execute
+      returns a value (even if it's stored in a varaible) (this is how blocks work without using return keywords)
+      ```ruby
+      def sum(*numbers)
+        sum = 0
+        numbers.each { |number| sum += number }
+        return sum
+      end
+      ```
+   *  Method arguments can also contain default by assigning a value to them as shown below
+      ```ruby
+      def sort(array, reverse=false)
+        # ...
+      end 
+      ```
+*  **Blocks**
+   *  Blocks are defined using `do` & `end` sections or `{}` sections. These create anonymous functions
+   *  Blocks can be passed to methods as a parameter (e.g. the `each` methods of an `Array` receives a block to execute)
 *  **Data Types**:
    *  **Number**:
       ```ruby
@@ -67,13 +116,14 @@
            data = "Some random data"           
            data.gsub!(/a/, "@")
            ```
-      *  **String Interpolation** - Ruby provides a method to insert variables into strings without using concatenation.
-         To do this simply surround your variable name with a `#{}` operator. 
+      *  **String Interpolation** - Ruby provides a method to insert variables into strings without using concatenation. 
+         To do this simply surround your variable name with a `#{}` operator. Methods can also be passed into the brackets. 
          ```ruby
          name = "Jim"
          age = 24
 
          puts "Hello #{name} I hear you are #{age} year(s) old!"
+         puts "You are #{Float(age)}!"
          ```
    *  **Integer**:
       *  **Methods/Attributes**:
@@ -158,6 +208,28 @@
       end
       ```
       *  The `=>` operator works like assignment and assigned the value (right-side) to the key (left-side)
+      *  As of version 1.9 of Ruby the hash-rocket (`=>`) syntax has been simplified to use json syntax. Strings as keys are automatically converted
+         to symbols in this mode during creation and you must access the keys using the symbol format. 
+         ```ruby
+         data = {
+             "name": "Bob the builder", # Converts "name" to :name
+             age: 90 # Key becomes :age
+         }
+
+         puts data["name".intern] # Intern is an alias for to_sym
+         puts data[:age]
+         ```
+      *  When attempting to access a key that doesn't exist the default is to return `nil` unless the default is overriden
+         ```ruby
+         contact = Hash.new # returns nil by default
+         contact = Hash.new(0) # return '0' by default
+         ```
+      *  Keys don't need to be just Strings. They can also be other types including **Symbols**. 
+         ```ruby
+         data = {
+             :id = 132
+         }
+         ```
       *  **Methods/Arguments**
          *  **delete(key)** - Removes an key/value pair from the hash
          *  **sort_by <expression>** - Sorts a hash using a custom defined sorting method
@@ -170,8 +242,27 @@
                 # This method sort using -1, 0, 1 matching based on characters or type specific operators
             end
             ```
+   *  **Symbol** - Is an identifier that always refers to the same location in memory when referenced. Use `:symbol_name` to create a new symbol. 
+      ```ruby
+      # Create a new symbol by referencing it at any point for the first time
+      a_symbol = :my_new_symbol
 
+      # Print out the memory ID for this symbol   
+      :my_new_symbol.object_id
+      a_symbol.object_id
 
+      ```      
+      *  These are generally used to reference keys in a hash or to reference method names
+      *  Are immutable
+      *  Only one instance of a symbol will ever exist and as such they save memory
+      *  Can be converted to/from strings as follows
+         ```ruby
+         # Returns 'one' as string
+         :one.to_s
+
+         # Returns :two as symbol
+         "two".to_sym
+         ```
 *  **Operators**:
    *  `+` - Addition
    *  `-` - Subtraction
@@ -281,6 +372,21 @@
          puts("#{number+1}. Hi!")
        end
        ```
+    *  **case-when** - Provides a select case option for picking an option from a list of available options
+       *  Syntax:
+          ```ruby
+          print "Enter a choice: "
+          choice = gets.chomp
+
+          case choice
+            when 'option1'
+              do_some_stuff
+            when 'option2'
+              do_some_other_stuff
+            else # All other choices
+              display_error
+          end
+          ```        
 *  Built-in objects:
    *  **puts** - Prints the provided arguments to the screen followed by a newline (i.e. put string)
       ```ruby
@@ -306,4 +412,4 @@
              name = gets.chomp
              ```
       
-         
+        
