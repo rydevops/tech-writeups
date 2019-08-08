@@ -3,6 +3,7 @@
 *  Everything is an object
 *  Ruby is case-sensitive
 *  Ruby is not whitespace sensitive meaning we can use whitespace (spaces or tabs) to help make code easier to read
+   *  A single line can contain multiple actions if they are seperated by `;`
 *  When calling methods with more than one argument you must us parentheses.
    *  A good rule of thumb is to use parentheses unless it's perfectly clear when reading the code 
 *  The `!` operator can be used to make changes to a variable and assign the result to that same variable in a single statement
@@ -20,6 +21,14 @@
      puts "'data' not included in '#{my_data}'"
    end
    ```
+*  The `=` tag is provided on a function name as a convention to incidate it is setting something
+   ```ruby   
+   class Car
+     def name=(value)
+       @name = value
+     end
+    end
+    ```   
 *  **Naming conventions**:
    *  **Variables** should use **snake case** labelling (e.g. `my_name = 17`)
    *  **Class Names** use camel casing (e.g. MyCar)
@@ -208,7 +217,7 @@
             puts "Engine has been powered #{state}"
         end
 
-        def self.count
+        def Car.count
             puts @@count
         end
 
@@ -224,11 +233,72 @@
       car.display_details
       puts "#{$creator}"
       ```
+      *  Class methods are named after the class with a method name as shown below:
+         ```ruby
+         class Car
+           def Car.do_something # Class method
+           end
+         end
+         ```
+      *  Methods can be marked `public` or `private`. If no modifier is specified the default will be `public`. Ruby
+         marks sections as `public` and `private` instead of having to mark each method as shown below
+         ```ruby
+         class Car
+           public
+           # all public below this point
+           def start
+               puts "Starting car"
+           end
+       
+           def stop
+               puts "Stopping car"
+           end
+       
+           private
+           # Everything below is private
+           def honk_horn
+               puts "Honk honk!"
+           end
+       
+           def lock_doors
+               puts "Doors locked!"
+           end
+       
+           public 
+           # Again all public below this point
+           def unlock_doors
+               puts "Doors unlocked!"
+           end
+         end
+         ```
+      *  Instance variables have a short hand option for making both accessor and setter methods without having to
+         define a new function for each by using `attr_reader` (accessor) and `attr_writer` (setter). These take symbols
+         that match the name of your instance variable as shown below. If both an accessor and setter are required a shortcut
+         using `attr_accessor` is also available. 
+         ```ruby
+         class Car
+           attr_reader :make  # Accessor for 'make' instance variable
+           attr_writer :make  # Settor for 'make' instance variable
+           attr_accessor :make # Same as the two lines above
+           
+           # Equivalent to the following two methods
+           def name
+             return name
+           end
+           def name=(value)
+             @name = value
+           end
+         end
+
+         car = Car.new
+         car.name = "Toyota"
+         puts "Model is #{car.name}"  
+         ```             
    *  Class variables:
       *  `@var_name`  - Instance variable
       *  `@@var_name` - Class variable
       *  `$var_name`  - Global variable (defined within the class itself)
-   *  Inheritence:
+   *  Inheritance:
       *  Syntax:
          ```ruby
          class ParentClass
@@ -238,7 +308,17 @@
          class ChildClass < ParentClass # Inherit from the ParentClass
            #  child definitions 
          end
-         ```   
+         ```
+         *  Methods can be overridden (replaced) by redefining the definition of the method in the derived class
+         *  You can call the super (parent) method by using the `super` keyword within the defined method. This will
+            automatically find the same method name within the parent can execute it with any parameters passed
+            ```ruby
+            class ChildClass < ParentClass
+              def do_something(name)
+                super(name) # Look in the parent class for 'do_something' and call it with the name provided
+              end
+            ```
+         *  Ruby only supports single-class inheritance but does support **mixins**
 *  **Data Types**:
    *  **Number**:
       ```ruby
