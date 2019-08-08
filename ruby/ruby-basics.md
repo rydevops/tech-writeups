@@ -32,6 +32,7 @@
 *  **Naming conventions**:
    *  **Variables** should use **snake case** labelling (e.g. `my_name = 17`)
    *  **Class Names** use camel casing (e.g. MyCar)
+   *  **Module Names** use camel casing (e.g. MyCar)
 *  **Comments**:
    *  `#` - Single line comment (can be used after a executing statement)
       ```ruby
@@ -280,7 +281,7 @@
            attr_reader :make  # Accessor for 'make' instance variable
            attr_writer :make  # Settor for 'make' instance variable
            attr_accessor :make # Same as the two lines above
-           
+
            # Equivalent to the following two methods
            def name
              return name
@@ -319,6 +320,63 @@
               end
             ```
          *  Ruby only supports single-class inheritance but does support **mixins**
+   *  **Mixins** - Are `include` statements defined within the class. These allow us to expend the functionality of a class
+      without requiring multiple inheritance. The `extend ModuleName` keyword can be used instead to make method definitions
+      available at the class-level instead of the instance level. 
+      ```ruby
+      module Action
+        def jump
+          @distance = rand(4) * 2  # Also set a distance instance variable
+          puts "I jumped forward #{@distance} meters!"
+        end 
+      end
+
+      class Dog # No inheritance
+        include Action
+        # other actions
+
+        def speak
+          puts "I am Rover and I can jump #{@distance}"
+        end  
+      end
+
+      dog = Dog.new
+      dog.jump  
+      ```
+*  **Modules** - This are very similar to **classes** except they cannot be instanitated or inherited. These are essentially 
+   a method for grouping a set of related class level methods into a single namespace. 
+   *  Syntax:
+      ```ruby
+      module ModuleName
+        # define constants and methods within this module
+        VERSION = "20190808"
+
+        def ModuleName.version
+          return VERSION
+        end
+      end
+      ```
+   *  Constants can be defined using all uppercase wording seperated by underscores. Ruby won't prevent changing of the values
+      once set but will warn if it's updated. 
+   *  To access constants and methods use the `::` scope operator (only required if module is brought in via `require`)
+      ```ruby
+      puts "Version: #{ModuleName::version}"
+      ```   
+      If module is brought in using `include` you can access the constants/methods (e.g. version) directly.
+   *  Some modules are already available by default (e.g. `Math`) while others need to be made available using the `require`
+      keyword as shown below:
+      ```ruby
+      require 'modulename'  # Expects a string to the ruby file containing the modules
+      ```
+
+      You can also use the `include` keyword to load the module as if it were part of your ruby file and access constants/methods
+      directly as shown below:
+      ```ruby
+      include ModuleName # Expected actual module name not a string
+
+      puts "Version: #{version}" ## No need for scope operator
+      ```
+
 *  **Data Types**:
    *  **Number**:
       ```ruby
@@ -520,15 +578,19 @@
       name ||= 'Jim' # This gets set to 'Jim'
       name ||= 'Bob' # name is not nil so it remains 'Jim'
       ```
-   * `<<` - Shortcut for string concatentation and array.push
-     ```ruby
-     items = []
-     items << 5
-     items << 6
-
-     name = "Jim"
-     name << "Bob" # Now string is "JimBob"
-     ```
+   *  `<<` - Shortcut for string concatentation and array.push
+      ```ruby
+      items = []
+      items << 5
+      items << 6
+ 
+      name = "Jim"
+      name << "Bob" # Now string is "JimBob"
+      ```
+   *  `::` - Scope resolution operator instructs Ruby to look for some property within a specific module
+      ```ruby
+      puts Math::PI  # Find PI constant in the Math module
+      ```  
 *  **Flow-control**:
    *  **if-elsif-else-end**:
       ```ruby
