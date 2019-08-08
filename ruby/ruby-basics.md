@@ -87,6 +87,73 @@
 *  **Blocks**
    *  Blocks are defined using `do` & `end` sections or `{}` sections. These create anonymous functions
    *  Blocks can be passed to methods as a parameter (e.g. the `each` methods of an `Array` receives a block to execute)
+   *  To execute a block passed into a function use the `yeild` keyword within the function. 
+      ```ruby
+      #  creating a method that yields (calls) the block passed to it
+      def execute_block
+        yield # executes the block
+      end
+
+      execute_block { puts "Hello from the block!" }
+
+      # Passing data to the block both from the function and before the function call
+      def greet(name)
+        yield("Jordan") # Passes an argument to the block
+        yield(name) # Passes the argument to the block
+      end
+
+      greet("Peter") {|name| puts "Hello #{name}"} # Notice how the name is the parameter being passed to the block
+      ```
+*  **Proc** - Provides a way to name a block and store it for later use (similar to a function definition)
+   *  Syntax
+      ```ruby
+      # Create a new Proc and assign a block to it
+      double = Proc.new do |number|
+        number * 2
+      end
+
+      # Passing the block to a function that yields
+      [1, 2, 3].collect!(&double)
+
+      # Another example
+      def greeter(name)
+        yield name
+      end
+
+      phrase = Proc.new do |name|
+        puts "Hello #{name}!"
+      end
+
+      greeter("James", &phrase) 
+      ```
+      *  The `&` converts the proc to a block before passing it to the method
+      *  Procs can be called directly using the `.call` method
+         ```ruby
+         phrase = Proc.new do |name|
+           puts "Hello #{name}!"
+         end
+
+         phrase.call("Bob")
+         ```
+      * **procs** do not check the number of parameters passed to it 
+      * **procs** that are defined in a called method will return from the method immediately not giving the called method any chance to complete
+        its remaining actions
+        ```ruby
+        def talk
+            commentator = Proc.new { re}
+            puts "In talk..."
+
+        ```
+*  **Lambdas** - Are similar to **proc**
+   *  Syntax:
+      ```ruby
+      lambda { |param| block }
+      ```
+      *  Can be stored as a variable
+         ```ruby
+         double = lambda { |number| number * 2 }
+         ```
+      * **lambdas** check the number of parameters passed to it. `nil` is assigned to missing variables and extra vars are ignored
 *  **Data Types**:
    *  **Number**:
       ```ruby
@@ -281,6 +348,22 @@
    *  `==` - Equality (relational/comparator operator)
    *  `>`, `>=`, `<`, `<=` (relational/comparator operators)
    *  `&&`, `||`, `!` (boolean/logical operators)
+   *  `condition ? true_result : false_result` (Ternary operator)
+   *  `||=` (conditional variable settings only if variable is not nil or undefined)
+      ```ruby
+      name = nil
+      name ||= 'Jim' # This gets set to 'Jim'
+      name ||= 'Bob' # name is not nil so it remains 'Jim'
+      ```
+   * `<<` - Shortcut for string concatentation and array.push
+     ```ruby
+     items = []
+     items << 5
+     items << 6
+
+     name = "Jim"
+     name << "Bob" # Now string is "JimBob"
+     ```
 *  **Flow-control**:
    *  **if-elsif-else-end**:
       ```ruby
@@ -412,4 +495,4 @@
              name = gets.chomp
              ```
       
-        
+         
